@@ -1,21 +1,23 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdd_test_case/counter.dart';
+import 'package:provider/provider.dart';
+import 'package:tdd_test_case/counter_test_case_widget/counter.dart';
+import 'package:tdd_test_case/counter_test_case_widget/counter_screen.dart';
 
 void main() {
-  test('Counter should start at 0', () {
-    final counter = Counter();
-    expect(counter.value, 0);
-  });
+  testWidgets('Counter increments when tap floating action button', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      ChangeNotifierProvider(
+        create: (_) => Counter(),
+        child: const MaterialApp(home: CounterScreen()),
+      ),
+    );
 
-  test('Increment', () {
-    final counter = Counter();
-    counter.increment();
-    expect(counter.value, 1);
-  });
+    expect(find.text('0'), findsOneWidget);
 
-  test('Decrement', () {
-    final counter = Counter();
-    counter.decrement();
-    expect(counter.value, -1);
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+
+    expect(find.text('1'), findsOneWidget);
   });
 }
